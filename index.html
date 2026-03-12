@@ -499,77 +499,89 @@
     }
 
     function drawWindRose(observations) {
-      const canvas = byId("windRose");
-      const ctx = canvas.getContext("2d");
-      const w = canvas.width;
-      const h = canvas.height;
-      const cx = w / 2;
-      const cy = h / 2;
-      const maxR = 95;
+  const canvas = byId("windRose");
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width;
+  const h = canvas.height;
+  const cx = w / 2;
+  const cy = h / 2;
+  const maxR = 95;
 
-      ctx.clearRect(0, 0, w, h);
+  ctx.clearRect(0, 0, w, h);
 
-      const bins = new Array(8).fill(0);
-      const labels = ["N","NE","E","SE","S","SW","W","NW"];
+  const bins = new Array(8).fill(0);
+  const labels = ["N","NE","E","SE","S","SW","W","NW"];
 
-      observations.forEach(item => {
-        const dir = item.dir;
-        if (dir === null || dir === undefined || isNaN(dir)) return;
-        const idx = Math.round(dir / 45) % 8;
-        bins[idx] += 1;
-      });
+  observations.forEach(item => {
+    const dir = Number(item.dir);
+    if (isNaN(dir)) return;
+    const idx = Math.round(dir / 45) % 8;
+    bins[idx] += 1;
+  });
 
-      const maxBin = Math.max(...bins, 1);
+  const totalDirs = bins.reduce((a, b) => a + b, 0);
+  const maxBin = Math.max(...bins, 1);
 
-      ctx.strokeStyle = "rgba(255,255,255,0.12)";
-      ctx.lineWidth = 1;
+  ctx.strokeStyle = "rgba(255,255,255,0.12)";
+  ctx.lineWidth = 1;
 
-      [0.25, 0.5, 0.75, 1].forEach(f => {
-        ctx.beginPath();
-        ctx.arc(cx, cy, maxR * f, 0, Math.PI * 2);
-        ctx.stroke();
-      });
+  [0.25, 0.5, 0.75, 1].forEach(f => {
+    ctx.beginPath();
+    ctx.arc(cx, cy, maxR * f, 0, Math.PI * 2);
+    ctx.stroke();
+  });
 
-      for (let i = 0; i < 8; i++) {
-        const angle = (-90 + i * 45) * Math.PI / 180;
-        const x = cx + Math.cos(angle) * maxR;
-        const y = cy + Math.sin(angle) * maxR;
+  for (let i = 0; i < 8; i++) {
+    const angle = (-90 + i * 45) * Math.PI / 180;
+    const x = cx + Math.cos(angle) * maxR;
+    const y = cy + Math.sin(angle) * maxR;
 
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.lineTo(x, y);
-        ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(x, y);
+    ctx.stroke();
 
-        const tx = cx + Math.cos(angle) * (maxR + 18);
-        const ty = cy + Math.sin(angle) * (maxR + 18);
-        ctx.fillStyle = "#9db4c9";
-        ctx.font = "12px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(labels[i], tx, ty);
-      }
+    const tx = cx + Math.cos(angle) * (maxR + 18);
+    const ty = cy + Math.sin(angle) * (maxR + 18);
+    ctx.fillStyle = "#9db4c9";
+    ctx.font = "12px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(labels[i], tx, ty);
+  }
 
-      for (let i = 0; i < 8; i++) {
-        const value = bins[i];
-        const radius = (value / maxBin) * maxR;
-        const start = ((i * 45) - 90 - 22.5) * Math.PI / 180;
-        const end = ((i * 45) - 90 + 22.5) * Math.PI / 180;
+  if (totalDirs === 0) {
+    ctx.fillStyle = "#9db4c9";
+    ctx.font = "14px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("No direction data", cx, cy);
+    return;
+  }
 
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, radius, start, end);
-        ctx.closePath();
-        ctx.fillStyle = "rgba(127,211,255,0.55)";
-        ctx.fill();
-        ctx.strokeStyle = "rgba(127,211,255,0.9)";
-        ctx.stroke();
-      }
+  for (let i = 0; i < 8; i++) {
+    const value = bins[i];
+    if (value === 0) continue;
 
-      ctx.beginPath();
-      ctx.arc(cx, cy, 4, 0, Math.PI * 2);
-      ctx.fillStyle = "#ffffff";
-      ctx.fill();
-    }
+    const radius = (value / maxBin) * maxR;
+    const start = ((i * 45) - 90 - 22.5) * Math.PI / 180;
+    const end = ((i * 45) - 90 + 22.5) * Math.PI / 180;
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, radius, start, end);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(127,211,255,0.55)";
+    ctx.fill();
+    ctx.strokeStyle = "rgba(127,211,255,0.95)";
+    ctx.stroke();
+  }
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
+}
 
     async function loadCurrentWeather() {
       const url = `https://api.weather.com/v2/pws/observations/current?stationId=${encodeURIComponent(STATION_ID)}&format=json&units=m&apiKey=${encodeURIComponent(API_KEY)}`;
@@ -600,57 +612,67 @@
     }
 
     async function loadHistoryCharts() {
-      const url = `https://api.weather.com/v2/pws/observations/all/1day?stationId=${encodeURIComponent(STATION_ID)}&format=json&units=m&numericPrecision=decimal&apiKey=${encodeURIComponent(API_KEY)}`;
+  const url = `https://api.weather.com/v2/pws/observations/all/1day?stationId=${encodeURIComponent(STATION_ID)}&format=json&units=m&numericPrecision=decimal&apiKey=${encodeURIComponent(API_KEY)}`;
 
-      const resp = await fetch(url, { cache: "no-store" });
-      if (!resp.ok) throw new Error(`History HTTP ${resp.status}`);
+  const resp = await fetch(url, { cache: "no-store" });
+  if (!resp.ok) throw new Error(`History HTTP ${resp.status}`);
 
-      const data = await resp.json();
-      const observations = data?.observations || [];
-      if (!observations.length) throw new Error("No recent history returned.");
+  const data = await resp.json();
+  const observations = data?.observations || [];
+  if (!observations.length) throw new Error("No recent history returned.");
 
-      const sixHoursAgo = Date.now() - (6 * 60 * 60 * 1000);
+  const sixHoursAgo = Date.now() - (6 * 60 * 60 * 1000);
 
-      const filtered = observations
-        .map(obs => {
-          const when = parseObsTime(obs);
-          return {
-            when,
-            windKmh: obs.metric?.windSpeed,
-            gustKmh: obs.metric?.windGust,
-            dir: obs.winddir
-          };
-        })
-        .filter(item =>
-          item.when &&
-          item.when.getTime() >= sixHoursAgo &&
-          item.windKmh !== null &&
-          item.windKmh !== undefined
-        )
-        .sort((a, b) => a.when - b.when);
+  const filtered = observations
+    .map(obs => {
+      const when = parseObsTime(obs);
 
-      if (!filtered.length) throw new Error("No wind history found in the last 6 hours.");
+      const dir =
+        obs.winddir ??
+        obs.windDir ??
+        obs.windDirection ??
+        obs.metric?.winddir ??
+        obs.metric?.windDir ??
+        obs.metric?.windDirection ??
+        null;
 
-      const labels = filtered.map(item =>
-        item.when.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-      );
+      return {
+        when,
+        windKmh: obs.metric?.windSpeed,
+        gustKmh: obs.metric?.windGust,
+        dir: dir
+      };
+    })
+    .filter(item =>
+      item.when &&
+      item.when.getTime() >= sixHoursAgo &&
+      item.windKmh !== null &&
+      item.windKmh !== undefined
+    )
+    .sort((a, b) => a.when - b.when);
 
-      const windKnots = filtered.map(item => toKnots(item.windKmh));
-      const gustKnots = filtered.map(item => toKnots(item.gustKmh ?? item.windKmh));
+  if (!filtered.length) throw new Error("No wind history found in the last 6 hours.");
 
-      windChart.data.labels = labels;
-      windChart.data.datasets[0].data = windKnots;
-      windChart.update();
+  const labels = filtered.map(item =>
+    item.when.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+  );
 
-      gustChart.data.labels = labels;
-      gustChart.data.datasets[0].data = gustKnots;
-      gustChart.update();
+  const windKnots = filtered.map(item => toKnots(item.windKmh));
+  const gustKnots = filtered.map(item => toKnots(item.gustKmh ?? item.windKmh));
 
-      byId("windAvg").textContent = fmt(average(windKnots));
-      byId("gustMax").textContent = fmt(maxVal(gustKnots));
+  windChart.data.labels = labels;
+  windChart.data.datasets[0].data = windKnots;
+  windChart.update();
 
-      drawWindRose(filtered);
-    }
+  gustChart.data.labels = labels;
+  gustChart.data.datasets[0].data = gustKnots;
+  gustChart.update();
+
+  byId("windAvg").textContent = fmt(average(windKnots));
+  byId("gustMax").textContent = fmt(maxVal(gustKnots));
+
+  drawWindRose(filtered);
+}
 
     async function updateAll() {
       try {
