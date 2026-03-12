@@ -12,8 +12,9 @@
       --text:#f4f8fb;
       --muted:#9db4c9;
       --accent:#7fd3ff;
+      --accent2:#ffd166;
       --good:#9be37a;
-      --warn:#ffd166;
+      --danger:#ff8a8a;
     }
 
     *{box-sizing:border-box}
@@ -26,15 +27,15 @@
     }
 
     .wrap{
-      max-width:520px;
+      max-width:700px;
       margin:0 auto;
-      padding:18px;
+      padding:16px;
     }
 
     .card{
       background:rgba(19,43,59,.96);
       border:1px solid rgba(255,255,255,.08);
-      border-radius:18px;
+      border-radius:20px;
       padding:18px;
       box-shadow:0 10px 30px rgba(0,0,0,.25);
     }
@@ -53,7 +54,7 @@
     }
 
     .title{
-      font-size:26px;
+      font-size:28px;
       font-weight:700;
       margin:2px 0 4px;
     }
@@ -66,10 +67,10 @@
 
     .hero{
       display:grid;
-      grid-template-columns:1.2fr .8fr;
+      grid-template-columns:1.15fr .85fr;
       gap:16px;
       align-items:center;
-      margin-bottom:16px;
+      margin-bottom:18px;
     }
 
     .speedBlock{
@@ -84,26 +85,26 @@
     }
 
     .speed{
-      font-size:64px;
+      font-size:72px;
       line-height:1;
       font-weight:800;
-      margin:6px 0 2px;
+      margin:8px 0 2px;
     }
 
     .unit{
-      font-size:20px;
+      font-size:22px;
       color:var(--muted);
       font-weight:600;
       margin-left:6px;
     }
 
     .gust{
-      font-size:22px;
-      margin-top:8px;
+      font-size:28px;
+      margin-top:10px;
     }
 
     .gust strong{
-      color:var(--warn);
+      color:var(--accent2);
     }
 
     .dirPanel{
@@ -112,8 +113,8 @@
 
     .compassWrap{
       position:relative;
-      width:160px;
-      height:160px;
+      width:190px;
+      height:190px;
       margin:0 auto 10px;
       border-radius:50%;
       border:1px solid rgba(255,255,255,.14);
@@ -122,22 +123,22 @@
 
     .compassCardinal{
       position:absolute;
-      font-size:12px;
+      font-size:13px;
       color:var(--muted);
       font-weight:700;
     }
 
-    .n{top:8px; left:50%; transform:translateX(-50%)}
-    .e{right:10px; top:50%; transform:translateY(-50%)}
-    .s{bottom:8px; left:50%; transform:translateX(-50%)}
-    .w{left:10px; top:50%; transform:translateY(-50%)}
+    .n{top:10px; left:50%; transform:translateX(-50%)}
+    .e{right:12px; top:50%; transform:translateY(-50%)}
+    .s{bottom:10px; left:50%; transform:translateX(-50%)}
+    .w{left:12px; top:50%; transform:translateY(-50%)}
 
     .needle{
       position:absolute;
       left:50%;
       top:50%;
       width:4px;
-      height:64px;
+      height:78px;
       transform-origin:50% 100%;
       transform:translate(-50%,-100%) rotate(0deg);
       transition:transform .6s ease;
@@ -149,9 +150,9 @@
       width:0;
       height:0;
       margin:0 auto;
-      border-left:10px solid transparent;
-      border-right:10px solid transparent;
-      border-bottom:58px solid var(--accent);
+      border-left:12px solid transparent;
+      border-right:12px solid transparent;
+      border-bottom:70px solid var(--accent);
       filter:drop-shadow(0 0 8px rgba(127,211,255,.35));
     }
 
@@ -159,28 +160,28 @@
       content:"";
       position:absolute;
       left:50%;
-      bottom:-8px;
+      bottom:-10px;
       transform:translateX(-50%);
-      width:16px;
-      height:16px;
+      width:18px;
+      height:18px;
       border-radius:50%;
       background:#fff;
     }
 
     .dirText{
-      font-size:22px;
+      font-size:26px;
       font-weight:700;
     }
 
     .dirDeg{
-      font-size:14px;
+      font-size:15px;
       color:var(--muted);
       margin-top:4px;
     }
 
     .grid{
       display:grid;
-      grid-template-columns:1fr 1fr 1fr;
+      grid-template-columns:repeat(3,1fr);
       gap:10px;
       margin:14px 0 18px;
     }
@@ -198,26 +199,54 @@
       margin-top:4px;
     }
 
-    .beaufort{
+    .summary{
       margin-bottom:14px;
       padding:12px;
       border-radius:14px;
       background:rgba(255,255,255,.04);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
     }
 
-    .beaufort strong{
+    .summary .box{
+      text-align:center;
+    }
+
+    .summary strong{
       color:var(--good);
+      font-size:22px;
+      display:block;
+      margin-top:4px;
     }
 
-    .chartWrap{
+    .panel{
       background:rgba(255,255,255,.04);
       border-radius:14px;
       padding:10px 10px 6px;
+      margin-bottom:14px;
+    }
+
+    .panelTitle{
+      margin:4px 0 8px 4px;
+      font-size:12px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .roseWrap{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:8px 0 14px;
+    }
+
+    #windRose{
+      width:280px;
+      height:280px;
+      max-width:100%;
+      background:transparent;
     }
 
     .footer{
@@ -238,11 +267,13 @@
       font-size:13px;
     }
 
-    @media (max-width:520px){
+    @media (max-width:700px){
       .hero{grid-template-columns:1fr}
-      .speed{text-align:center}
       .speedBlock{text-align:center}
+      .speed{text-align:center;font-size:64px}
       .grid{grid-template-columns:1fr}
+      .summary{grid-template-columns:1fr}
+      .compassWrap{width:170px;height:170px}
     }
   </style>
 </head>
@@ -260,8 +291,8 @@
       <div class="hero">
         <div class="speedBlock">
           <div class="label">Wind Speed</div>
-          <div class="speed"><span id="windSpeed">--</span><span class="unit">km/h</span></div>
-          <div class="gust">Gust <strong id="windGust">--</strong> km/h</div>
+          <div class="speed"><span id="windSpeed">--</span><span class="unit">kt</span></div>
+          <div class="gust">Gust <strong id="windGust">--</strong> kt</div>
         </div>
 
         <div class="dirPanel">
@@ -292,20 +323,45 @@
         </div>
       </div>
 
-      <div class="beaufort">
-        <div><span class="label">Beaufort</span><br><strong id="beaufortText">--</strong></div>
-        <div><span class="label">Average gust in widget</span><br><strong id="gustAvg">--</strong> km/h</div>
+      <div class="summary">
+        <div class="box">
+          <div class="label">6h average wind</div>
+          <strong id="windAvg">--</strong>
+          <div class="label">kt</div>
+        </div>
+        <div class="box">
+          <div class="label">6h max gust</div>
+          <strong id="gustMax">--</strong>
+          <div class="label">kt</div>
+        </div>
+        <div class="box">
+          <div class="label">Beaufort</div>
+          <strong id="beaufortText">--</strong>
+          <div class="label">current</div>
+        </div>
       </div>
 
-      <div class="chartWrap">
-        <div class="label" style="margin:4px 0 8px 4px;">Recent gust trend</div>
-        <canvas id="gustChart" height="170"></canvas>
+      <div class="panel">
+        <div class="panelTitle">Wind rose — last 6 hours</div>
+        <div class="roseWrap">
+          <canvas id="windRose" width="280" height="280"></canvas>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panelTitle">Wind gust — last 6 hours</div>
+        <canvas id="gustChart" height="180"></canvas>
+      </div>
+
+      <div class="panel">
+        <div class="panelTitle">Wind speed — last 6 hours</div>
+        <canvas id="windChart" height="180"></canvas>
       </div>
 
       <div class="error" id="errorBox"></div>
 
       <div class="footer">
-       
+        Current values and charts refresh every 60 seconds.
       </div>
     </div>
   </div>
@@ -314,12 +370,15 @@
     const STATION_ID = "ICOCORKK2";
     const API_KEY = "2f2df7a679ae4533adf7a679ae35334f";
     const REFRESH_MS = 60000;
-
-    const gustValues = [];
-    const gustLabels = [];
+    const KMH_TO_KNOTS = 0.539957;
 
     function byId(id) {
       return document.getElementById(id);
+    }
+
+    function toKnots(kmh) {
+      if (kmh === null || kmh === undefined || isNaN(kmh)) return null;
+      return Math.round(kmh * KMH_TO_KNOTS);
     }
 
     function directionToCompass(deg) {
@@ -358,38 +417,73 @@
       return Math.round((arr.reduce((a, b) => a + b, 0) / arr.length) * 10) / 10;
     }
 
-    const chart = new Chart(document.getElementById("gustChart"), {
-      type: "line",
-      data: {
-        labels: gustLabels,
-        datasets: [{
-          data: gustValues,
-          borderWidth: 2,
-          tension: 0.28,
-          fill: false,
-          pointRadius: 2
-        }]
+    function maxVal(arr) {
+      if (!arr.length) return null;
+      return Math.max(...arr);
+    }
+
+    function parseObsTime(obs) {
+      if (obs.obsTimeUtc) return new Date(obs.obsTimeUtc);
+      if (obs.epoch !== undefined) return new Date(obs.epoch * 1000);
+      return null;
+    }
+
+    const commonChartOptions = {
+      animation: false,
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: true }
       },
-      options: {
-        animation: false,
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { enabled: true }
+      scales: {
+        x: {
+          ticks: { color: "#9db4c9", maxTicksLimit: 8 },
+          grid: { color: "rgba(255,255,255,0.05)" }
         },
-        scales: {
-          x: {
-            ticks: { color: "#9db4c9", maxTicksLimit: 6 },
-            grid: { color: "rgba(255,255,255,0.05)" }
+        y: {
+          beginAtZero: true,
+          ticks: { color: "#9db4c9" },
+          title: {
+            display: true,
+            text: "knots",
+            color: "#9db4c9"
           },
-          y: {
-            beginAtZero: true,
-            ticks: { color: "#9db4c9" },
-            grid: { color: "rgba(255,255,255,0.05)" }
-          }
+          grid: { color: "rgba(255,255,255,0.05)" }
         }
       }
+    };
+
+    const gustChart = new Chart(document.getElementById("gustChart"), {
+      type: "line",
+      data: {
+        labels: [],
+        datasets: [{
+          data: [],
+          borderWidth: 2,
+          tension: 0.25,
+          fill: false,
+          pointRadius: 1.5,
+          borderColor: "#ffd166"
+        }]
+      },
+      options: commonChartOptions
+    });
+
+    const windChart = new Chart(document.getElementById("windChart"), {
+      type: "line",
+      data: {
+        labels: [],
+        datasets: [{
+          data: [],
+          borderWidth: 2,
+          tension: 0.25,
+          fill: false,
+          pointRadius: 1.5,
+          borderColor: "#7fd3ff"
+        }]
+      },
+      options: commonChartOptions
     });
 
     function setError(msg) {
@@ -404,65 +498,173 @@
       box.textContent = "";
     }
 
-    async function updateWeather() {
-      if (API_KEY === "YOUR_API_KEY") {
-        setError("Add your Weather Company API key in the file first.");
-        return;
+    function drawWindRose(observations) {
+      const canvas = byId("windRose");
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const maxR = 95;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const bins = new Array(8).fill(0);
+      const labels = ["N","NE","E","SE","S","SW","W","NW"];
+
+      observations.forEach(item => {
+        const dir = item.dir;
+        if (dir === null || dir === undefined || isNaN(dir)) return;
+        const idx = Math.round(dir / 45) % 8;
+        bins[idx] += 1;
+      });
+
+      const maxBin = Math.max(...bins, 1);
+
+      ctx.strokeStyle = "rgba(255,255,255,0.12)";
+      ctx.lineWidth = 1;
+
+      [0.25, 0.5, 0.75, 1].forEach(f => {
+        ctx.beginPath();
+        ctx.arc(cx, cy, maxR * f, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+
+      for (let i = 0; i < 8; i++) {
+        const angle = (-90 + i * 45) * Math.PI / 180;
+        const x = cx + Math.cos(angle) * maxR;
+        const y = cy + Math.sin(angle) * maxR;
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+
+        const tx = cx + Math.cos(angle) * (maxR + 18);
+        const ty = cy + Math.sin(angle) * (maxR + 18);
+        ctx.fillStyle = "#9db4c9";
+        ctx.font = "12px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(labels[i], tx, ty);
       }
 
+      for (let i = 0; i < 8; i++) {
+        const value = bins[i];
+        const radius = (value / maxBin) * maxR;
+        const start = ((i * 45) - 90 - 22.5) * Math.PI / 180;
+        const end = ((i * 45) - 90 + 22.5) * Math.PI / 180;
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, radius, start, end);
+        ctx.closePath();
+        ctx.fillStyle = "rgba(127,211,255,0.55)";
+        ctx.fill();
+        ctx.strokeStyle = "rgba(127,211,255,0.9)";
+        ctx.stroke();
+      }
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
+    }
+
+    async function loadCurrentWeather() {
       const url = `https://api.weather.com/v2/pws/observations/current?stationId=${encodeURIComponent(STATION_ID)}&format=json&units=m&apiKey=${encodeURIComponent(API_KEY)}`;
 
+      const resp = await fetch(url, { cache: "no-store" });
+      if (!resp.ok) throw new Error(`Current conditions HTTP ${resp.status}`);
+
+      const data = await resp.json();
+      const obs = data?.observations?.[0];
+      if (!obs) throw new Error("No current observation returned.");
+
+      const windSpeedKmh = obs.metric?.windSpeed;
+      const windGustKmh = obs.metric?.windGust;
+      const windDir = obs.winddir;
+      const pressure = obs.metric?.pressure;
+      const humidity = obs.humidity;
+      const temp = obs.metric?.temp;
+
+      byId("windSpeed").textContent = fmt(toKnots(windSpeedKmh));
+      byId("windGust").textContent = fmt(toKnots(windGustKmh));
+      byId("windDirText").textContent = directionToCompass(windDir);
+      byId("windDirDeg").textContent = fmt(windDir, "°");
+      byId("pressure").textContent = fmt(pressure, " mb");
+      byId("humidity").textContent = fmt(humidity, "%");
+      byId("temp").textContent = fmt(temp, "°C");
+      byId("beaufortText").textContent = beaufort(Number(windSpeedKmh || 0));
+      byId("needle").style.transform = `translate(-50%,-100%) rotate(${Number(windDir || 0)}deg)`;
+    }
+
+    async function loadHistoryCharts() {
+      const url = `https://api.weather.com/v2/pws/observations/all/1day?stationId=${encodeURIComponent(STATION_ID)}&format=json&units=m&numericPrecision=decimal&apiKey=${encodeURIComponent(API_KEY)}`;
+
+      const resp = await fetch(url, { cache: "no-store" });
+      if (!resp.ok) throw new Error(`History HTTP ${resp.status}`);
+
+      const data = await resp.json();
+      const observations = data?.observations || [];
+      if (!observations.length) throw new Error("No recent history returned.");
+
+      const sixHoursAgo = Date.now() - (6 * 60 * 60 * 1000);
+
+      const filtered = observations
+        .map(obs => {
+          const when = parseObsTime(obs);
+          return {
+            when,
+            windKmh: obs.metric?.windSpeed,
+            gustKmh: obs.metric?.windGust,
+            dir: obs.winddir
+          };
+        })
+        .filter(item =>
+          item.when &&
+          item.when.getTime() >= sixHoursAgo &&
+          item.windKmh !== null &&
+          item.windKmh !== undefined
+        )
+        .sort((a, b) => a.when - b.when);
+
+      if (!filtered.length) throw new Error("No wind history found in the last 6 hours.");
+
+      const labels = filtered.map(item =>
+        item.when.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      );
+
+      const windKnots = filtered.map(item => toKnots(item.windKmh));
+      const gustKnots = filtered.map(item => toKnots(item.gustKmh ?? item.windKmh));
+
+      windChart.data.labels = labels;
+      windChart.data.datasets[0].data = windKnots;
+      windChart.update();
+
+      gustChart.data.labels = labels;
+      gustChart.data.datasets[0].data = gustKnots;
+      gustChart.update();
+
+      byId("windAvg").textContent = fmt(average(windKnots));
+      byId("gustMax").textContent = fmt(maxVal(gustKnots));
+
+      drawWindRose(filtered);
+    }
+
+    async function updateAll() {
       try {
-        const resp = await fetch(url, { cache: "no-store" });
-        if (!resp.ok) {
-          throw new Error(`HTTP ${resp.status}`);
-        }
-
-        const data = await resp.json();
-        const obs = data && data.observations && data.observations[0];
-
-        if (!obs) {
-          throw new Error("No observation returned.");
-        }
-
-        const windSpeed = obs.metric?.windSpeed;
-        const windGust = obs.metric?.windGust;
-        const windDir = obs.winddir;
-        const pressure = obs.metric?.pressure;
-        const humidity = obs.humidity;
-        const temp = obs.metric?.temp;
-
-        byId("windSpeed").textContent = fmt(windSpeed);
-        byId("windGust").textContent = fmt(windGust);
-        byId("windDirText").textContent = directionToCompass(windDir);
-        byId("windDirDeg").textContent = fmt(windDir, "°");
-        byId("pressure").textContent = fmt(pressure, " mb");
-        byId("humidity").textContent = fmt(humidity, "%");
-        byId("temp").textContent = fmt(temp, "°C");
-        byId("beaufortText").textContent = beaufort(Number(windSpeed || 0));
-        byId("needle").style.transform = `translate(-50%,-100%) rotate(${Number(windDir || 0)}deg)`;
-
-        const label = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-        gustLabels.push(label);
-        gustValues.push(Number(windGust || 0));
-
-        if (gustLabels.length > 20) {
-          gustLabels.shift();
-          gustValues.shift();
-        }
-
-        byId("gustAvg").textContent = fmt(average(gustValues));
-        byId("updated").textContent = `Updated ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
-
-        chart.update();
+        await Promise.all([loadCurrentWeather(), loadHistoryCharts()]);
+        byId("updated").textContent =
+          `Updated ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
         clearError();
       } catch (err) {
         setError(`Could not load live data: ${err.message}`);
       }
     }
 
-    updateWeather();
-    setInterval(updateWeather, REFRESH_MS);
+    updateAll();
+    setInterval(updateAll, REFRESH_MS);
   </script>
 </body>
 </html>
