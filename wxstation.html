@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cork Wind Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{
+      --bg:#0b1d2a;
+      --panel:#132b3b;
+      --text:#f4f8fb;
+      --muted:#9db4c9;
+      --accent:#7fd3ff;
+      --good:#9be37a;
+      --warn:#ffd166;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:linear-gradient(180deg,#081621 0%, #0b1d2a 100%);
+      color:var(--text);
+    }
+
+    .wrap{
+      max-width:520px;
+      margin:0 auto;
+      padding:18px;
+    }
+
+    .card{
+      background:rgba(19,43,59,.96);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .station{
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .title{
+      font-size:26px;
+      font-weight:700;
+      margin:2px 0 4px;
+    }
+
+    .updated{
+      font-size:12px;
+      color:var(--muted);
+      text-align:right;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:16px;
+      align-items:center;
+      margin-bottom:16px;
+    }
+
+    .speedBlock{
+      text-align:left;
+    }
+
+    .label{
+      font-size:12px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .speed{
+      font-size:64px;
+      line-height:1;
+      font-weight:800;
+      margin:6px 0 2px;
+    }
+
+    .unit{
+      font-size:20px;
+      color:var(--muted);
+      font-weight:600;
+      margin-left:6px;
+    }
+
+    .gust{
+      font-size:22px;
+      margin-top:8px;
+    }
+
+    .gust strong{
+      color:var(--warn);
+    }
+
+    .dirPanel{
+      text-align:center;
+    }
+
+    .compassWrap{
+      position:relative;
+      width:160px;
+      height:160px;
+      margin:0 auto 10px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.14);
+      background:radial-gradient(circle at center, rgba(255,255,255,.06) 0, rgba(255,255,255,.02) 60%, rgba(255,255,255,.01) 100%);
+    }
+
+    .compassCardinal{
+      position:absolute;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .n{top:8px; left:50%; transform:translateX(-50%)}
+    .e{right:10px; top:50%; transform:translateY(-50%)}
+    .s{bottom:8px; left:50%; transform:translateX(-50%)}
+    .w{left:10px; top:50%; transform:translateY(-50%)}
+
+    .needle{
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:4px;
+      height:64px;
+      transform-origin:50% 100%;
+      transform:translate(-50%,-100%) rotate(0deg);
+      transition:transform .6s ease;
+    }
+
+    .needle::before{
+      content:"";
+      display:block;
+      width:0;
+      height:0;
+      margin:0 auto;
+      border-left:10px solid transparent;
+      border-right:10px solid transparent;
+      border-bottom:58px solid var(--accent);
+      filter:drop-shadow(0 0 8px rgba(127,211,255,.35));
+    }
+
+    .needle::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      bottom:-8px;
+      transform:translateX(-50%);
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background:#fff;
+    }
+
+    .dirText{
+      font-size:22px;
+      font-weight:700;
+    }
+
+    .dirDeg{
+      font-size:14px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+      margin:14px 0 18px;
+    }
+
+    .mini{
+      background:rgba(255,255,255,.04);
+      border-radius:14px;
+      padding:12px;
+      text-align:center;
+    }
+
+    .mini .v{
+      font-size:24px;
+      font-weight:700;
+      margin-top:4px;
+    }
+
+    .beaufort{
+      margin-bottom:14px;
+      padding:12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .beaufort strong{
+      color:var(--good);
+    }
+
+    .chartWrap{
+      background:rgba(255,255,255,.04);
+      border-radius:14px;
+      padding:10px 10px 6px;
+    }
+
+    .footer{
+      margin-top:12px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
+    .error{
+      margin-top:12px;
+      padding:10px 12px;
+      background:rgba(255,80,80,.12);
+      border:1px solid rgba(255,80,80,.3);
+      color:#ffd3d3;
+      border-radius:12px;
+      display:none;
+      font-size:13px;
+    }
+
+    @media (max-width:520px){
+      .hero{grid-template-columns:1fr}
+      .speed{text-align:center}
+      .speedBlock{text-align:center}
+      .grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="topbar">
+        <div>
+          <div class="station">Weather Underground station ICOCORKK2</div>
+          <div class="title">Live Wind</div>
+        </div>
+        <div class="updated" id="updated">Updating…</div>
+      </div>
+
+      <div class="hero">
+        <div class="speedBlock">
+          <div class="label">Wind Speed</div>
+          <div class="speed"><span id="windSpeed">--</span><span class="unit">km/h</span></div>
+          <div class="gust">Gust <strong id="windGust">--</strong> km/h</div>
+        </div>
+
+        <div class="dirPanel">
+          <div class="compassWrap">
+            <div class="compassCardinal n">N</div>
+            <div class="compassCardinal e">E</div>
+            <div class="compassCardinal s">S</div>
+            <div class="compassCardinal w">W</div>
+            <div class="needle" id="needle"></div>
+          </div>
+          <div class="dirText" id="windDirText">--</div>
+          <div class="dirDeg" id="windDirDeg">--°</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="mini">
+          <div class="label">Pressure</div>
+          <div class="v" id="pressure">--</div>
+        </div>
+        <div class="mini">
+          <div class="label">Humidity</div>
+          <div class="v" id="humidity">--</div>
+        </div>
+        <div class="mini">
+          <div class="label">Temp</div>
+          <div class="v" id="temp">--</div>
+        </div>
+      </div>
+
+      <div class="beaufort">
+        <div><span class="label">Beaufort</span><br><strong id="beaufortText">--</strong></div>
+        <div><span class="label">Average gust in widget</span><br><strong id="gustAvg">--</strong> km/h</div>
+      </div>
+
+      <div class="chartWrap">
+        <div class="label" style="margin:4px 0 8px 4px;">Recent gust trend</div>
+        <canvas id="gustChart" height="170"></canvas>
+      </div>
+
+      <div class="error" id="errorBox"></div>
+
+      <div class="footer">
+       
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STATION_ID = "ICOCORKK2";
+    const API_KEY = "2f2df7a679ae4533adf7a679ae35334f";
+    const REFRESH_MS = 60000;
+
+    const gustValues = [];
+    const gustLabels = [];
+
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    function directionToCompass(deg) {
+      if (deg === null || deg === undefined || isNaN(deg)) return "--";
+      const dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+      return dirs[Math.round(deg / 22.5) % 16];
+    }
+
+    function beaufort(kmh) {
+      const scale = [
+        [1, "0 Calm"],
+        [5, "1 Light air"],
+        [11, "2 Light breeze"],
+        [19, "3 Gentle breeze"],
+        [28, "4 Moderate breeze"],
+        [38, "5 Fresh breeze"],
+        [49, "6 Strong breeze"],
+        [61, "7 Near gale"],
+        [74, "8 Gale"],
+        [88, "9 Strong gale"],
+        [102, "10 Storm"],
+        [117, "11 Violent storm"]
+      ];
+      for (const [limit, label] of scale) {
+        if (kmh <= limit) return label;
+      }
+      return "12 Hurricane force";
+    }
+
+    function fmt(v, suffix = "") {
+      return (v === null || v === undefined || v === "" || isNaN(v)) ? "--" : `${v}${suffix}`;
+    }
+
+    function average(arr) {
+      if (!arr.length) return null;
+      return Math.round((arr.reduce((a, b) => a + b, 0) / arr.length) * 10) / 10;
+    }
+
+    const chart = new Chart(document.getElementById("gustChart"), {
+      type: "line",
+      data: {
+        labels: gustLabels,
+        datasets: [{
+          data: gustValues,
+          borderWidth: 2,
+          tension: 0.28,
+          fill: false,
+          pointRadius: 2
+        }]
+      },
+      options: {
+        animation: false,
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: true }
+        },
+        scales: {
+          x: {
+            ticks: { color: "#9db4c9", maxTicksLimit: 6 },
+            grid: { color: "rgba(255,255,255,0.05)" }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: { color: "#9db4c9" },
+            grid: { color: "rgba(255,255,255,0.05)" }
+          }
+        }
+      }
+    });
+
+    function setError(msg) {
+      const box = byId("errorBox");
+      box.style.display = "block";
+      box.textContent = msg;
+    }
+
+    function clearError() {
+      const box = byId("errorBox");
+      box.style.display = "none";
+      box.textContent = "";
+    }
+
+    async function updateWeather() {
+      if (API_KEY === "YOUR_API_KEY") {
+        setError("Add your Weather Company API key in the file first.");
+        return;
+      }
+
+      const url = `https://api.weather.com/v2/pws/observations/current?stationId=${encodeURIComponent(STATION_ID)}&format=json&units=m&apiKey=${encodeURIComponent(API_KEY)}`;
+
+      try {
+        const resp = await fetch(url, { cache: "no-store" });
+        if (!resp.ok) {
+          throw new Error(`HTTP ${resp.status}`);
+        }
+
+        const data = await resp.json();
+        const obs = data && data.observations && data.observations[0];
+
+        if (!obs) {
+          throw new Error("No observation returned.");
+        }
+
+        const windSpeed = obs.metric?.windSpeed;
+        const windGust = obs.metric?.windGust;
+        const windDir = obs.winddir;
+        const pressure = obs.metric?.pressure;
+        const humidity = obs.humidity;
+        const temp = obs.metric?.temp;
+
+        byId("windSpeed").textContent = fmt(windSpeed);
+        byId("windGust").textContent = fmt(windGust);
+        byId("windDirText").textContent = directionToCompass(windDir);
+        byId("windDirDeg").textContent = fmt(windDir, "°");
+        byId("pressure").textContent = fmt(pressure, " mb");
+        byId("humidity").textContent = fmt(humidity, "%");
+        byId("temp").textContent = fmt(temp, "°C");
+        byId("beaufortText").textContent = beaufort(Number(windSpeed || 0));
+        byId("needle").style.transform = `translate(-50%,-100%) rotate(${Number(windDir || 0)}deg)`;
+
+        const label = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        gustLabels.push(label);
+        gustValues.push(Number(windGust || 0));
+
+        if (gustLabels.length > 20) {
+          gustLabels.shift();
+          gustValues.shift();
+        }
+
+        byId("gustAvg").textContent = fmt(average(gustValues));
+        byId("updated").textContent = `Updated ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
+
+        chart.update();
+        clearError();
+      } catch (err) {
+        setError(`Could not load live data: ${err.message}`);
+      }
+    }
+
+    updateWeather();
+    setInterval(updateWeather, REFRESH_MS);
+  </script>
+</body>
+</html>
